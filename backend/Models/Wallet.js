@@ -1,11 +1,20 @@
 const mongoose = require('mongoose');
 
 const WalletSchema = new mongoose.Schema({
-  password: {
+  address: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  mnemonic: {
     type: String,
     required: true
   },
-  secretPhrase: {
+  privateKey: {
+    type: String,
+    required: true
+  },
+  password: {
     type: String,
     required: true
   }
