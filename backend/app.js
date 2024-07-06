@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const walletController = require('./Controllers/walletController');
+import router from './routes/walletRoutes';
 
 dotenv.config();
 
@@ -17,9 +17,7 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 app.use(bodyParser.json());
 
-app.post('/createWallet', walletController.createWallet);
-app.get('/getWallet', walletController.getWallet);
-app.get('/getMnemonicWords', walletController.getMnemonicWords);
+app.use('/', router);
 
 app.listen(port, () => {
   console.log(`MyCoin app listening at http://localhost:${port}`);

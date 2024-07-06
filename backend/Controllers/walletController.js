@@ -3,6 +3,9 @@ const crypto = require('crypto-js');
 const bip39 = require('bip39');
 const { ethers } = require('ethers');
 const Wallet = require('../models/Wallet');
+const Blockchain = require('../blockchain/blockchain');
+
+const myCoin = new Blockchain();
 
 exports.createWallet = async (req, res) => {
     const { password, mnemonic } = req.body;
@@ -80,4 +83,67 @@ exports.getWallet = async (req, res) => {
 exports.getMnemonicWords = (req, res) => {
     const mnemonic = bip39.generateMnemonic();
     res.status(200).json({ mnemonic });
+};
+
+
+// Send Coin
+exports.sendCoin = async (req, res) => {
+    const { senderAddress, recipientAddress, amount, password } = req.body;
+
+    if (!senderAddress || !recipientAddress || !amount || !password) {
+        return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    try {
+        const wallet = await Wallet.findOne({ address: senderAddress });
+
+        if (!wallet) {
+            return res.status(404).json({ message: 'Wallet not found' });
+        }
+
+        const isMatch = await bcrypt.compare(password, wallet.password);
+
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Invalid password' });
+        }
+
+        const transaction = new Transaction(senderAddress, recipientAddress, amount);
+        myCoin.createTransaction(transaction);
+
+        res.status(200).json({ message: 'Transaction added successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error sending coin', error });
+    }
+};
+
+
+// Get Transaction History
+exports.getTransactionHistory = async (req, res) => {
+    const { address } = req.query;
+
+    if (!address) {
+        return res.status(400).json({ message: 'Address is required' });
+    }
+
+    try {
+        const transactions = myCoin.getAllTransactionsForWallet(address);
+        res.status(200).json(transactions);
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving transaction history', error });
+    }
+};
+
+exports.addFunds = async (req, res) => {
+    const { address, amount } = req.body;
+
+    if (!address || !amount) {
+        return res.status(400).json({ message: 'Address and amount are required' });
+    }
+
+    try {
+        myCoin.addFunds(address, amount);
+        res.status(200).json({ message: 'Funds added successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error adding funds', error });
+    }
 };
