@@ -5,3 +5,5 @@ class Transaction {
         this.amount = amount;
     }
 }
+
+module.exports = Transaction;

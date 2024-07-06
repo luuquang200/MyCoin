@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-import router from './routes/walletRoutes';
+const router = require('./routes/walletRoutes'); 
 
 dotenv.config();
 

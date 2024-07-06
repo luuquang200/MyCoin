@@ -4,7 +4,7 @@ const bip39 = require('bip39');
 const { ethers } = require('ethers');
 const Wallet = require('../models/Wallet');
 const Blockchain = require('../blockchain/blockchain');
-
+const Transaction = require('../blockchain/transaction');
 const myCoin = new Blockchain();
 
 exports.createWallet = async (req, res) => {
@@ -74,7 +74,9 @@ exports.getWallet = async (req, res) => {
         const bytesMnemonic = crypto.AES.decrypt(wallet.mnemonic, password);
         const mnemonic = bytesMnemonic.toString(crypto.enc.Utf8);
 
-        res.status(200).json({ address: wallet.address, mnemonic, privateKey });
+        const balance = myCoin.getBalanceOfAddress(wallet.address);
+
+        res.status(200).json({ address: wallet.address, mnemonic, privateKey, balance });
     } catch (error) {
         res.status(500).json({ message: 'Error retrieving wallet', error });
     }
@@ -145,5 +147,20 @@ exports.addFunds = async (req, res) => {
         res.status(200).json({ message: 'Funds added successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Error adding funds', error });
+    }
+};
+
+exports.minePendingTransactions = async (req, res) => {
+    const { miningRewardAddress } = req.body;
+
+    if (!miningRewardAddress) {
+        return res.status(400).json({ message: 'Mining reward address is required' });
+    }
+
+    try {
+        myCoin.minePendingTransactions(miningRewardAddress);
+        res.status(200).json({ message: 'Block successfully mined!' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error mining transactions', error });
     }
 };
