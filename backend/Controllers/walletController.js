@@ -109,6 +109,10 @@ exports.sendCoin = async (req, res) => {
             return res.status(401).json({ message: 'Invalid password' });
         }
 
+        if (myCoin.getBalanceOfAddress(senderAddress) < amount) {
+            return res.status(400).json({ message: 'Not enough balance' });
+        }
+
         const transaction = new Transaction(senderAddress, recipientAddress, amount);
         myCoin.createTransaction(transaction);
 
@@ -135,6 +139,7 @@ exports.getTransactionHistory = async (req, res) => {
     }
 };
 
+// Add Funds (Only for testing purposes)
 exports.addFunds = async (req, res) => {
     const { address, amount } = req.body;
 
@@ -150,11 +155,39 @@ exports.addFunds = async (req, res) => {
     }
 };
 
+// Add Stake
+exports.addStake = async (req, res) => {
+    const { address, amount } = req.body;
+
+    if (!address || !amount) {
+        return res.status(400).json({ message: 'Address and amount are required' });
+    }
+
+    if (myCoin.getBalanceOfAddress(address) < amount) {
+        return res.status(400).json({ message: 'Not enough balance' });
+    }
+
+    try {
+        // Deduct the staked amount from the user's balance
+        myCoin.createTransaction({ from: address, to: null, amount });
+
+        myCoin.addStake(address, amount);
+        res.status(200).json({ message: 'Stake added successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error adding stake', error });
+    }
+};
+
+// Mine Pending Transactions
 exports.minePendingTransactions = async (req, res) => {
     const { miningRewardAddress } = req.body;
 
     if (!miningRewardAddress) {
         return res.status(400).json({ message: 'Mining reward address is required' });
+    }
+
+    if (myCoin.selectStakingAddress() !== miningRewardAddress) {
+        return res.status(400).json({ message: 'You are not the staker' });
     }
 
     try {
@@ -163,4 +196,11 @@ exports.minePendingTransactions = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Error mining transactions', error });
     }
+};
+
+
+// Get pending transactions
+exports.getPendingTransactions = async (req, res) => {
+    const pendingTransactions = myCoin.pendingTransactions;
+    res.status(200).json(pendingTransactions);
 };

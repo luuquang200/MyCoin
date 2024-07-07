@@ -4,9 +4,9 @@ const Transaction = require('./transaction');
 class Blockchain {
     constructor() {
         this.chain = [this.createGenesisBlock()];
-        this.difficulty = 2;
         this.pendingTransactions = [];
         this.miningReward = 100;
+        this.stakeholders = {}; // save the amount of stake for each address
     }
 
     createGenesisBlock() {
@@ -17,25 +17,27 @@ class Blockchain {
         return this.chain[this.chain.length - 1];
     }
 
-    minePendingTransactions(miningRewardAddress) {
-        const rewardTx = new Transaction(null, miningRewardAddress, this.miningReward);
+    minePendingTransactions(stakingAddress) {
+        const rewardTx = new Transaction(null, stakingAddress, this.miningReward);
         this.pendingTransactions.push(rewardTx);
-
+    
         let block = new Block(Date.now(), this.pendingTransactions, this.getLatestBlock().hash);
-        block.mineBlock(this.difficulty);
-
-        console.log('Block successfully mined!');
+        block.staker = stakingAddress;
+        block.hash = block.calculateHash();
+    
+        console.log(`Block successfully mined by ${stakingAddress}!`);
         this.chain.push(block);
-
+    
         this.pendingTransactions = [];
     }
+    
 
     createTransaction(transaction) {
         if (!transaction.fromAddress || !transaction.toAddress) {
             throw new Error('Transaction must include from and to address');
         }
 
-        if (!this.getBalanceOfAddress(transaction.fromAddress) >= transaction.amount) {
+        if (this.getBalanceOfAddress(transaction.fromAddress) < transaction.amount) {
             throw new Error('Not enough balance');
         }
 
@@ -92,10 +94,32 @@ class Blockchain {
     }
 
     addFunds(address, amount) {
-        this.pendingTransactions.push({
-            amount: amount,
-            address: address
-        });
+        this.chain.push(new Block(Date.now(), [new Transaction(null, address, amount)], this.getLatestBlock().hash));
+    }
+    
+    addStake(address, amount) {
+        if (this.stakeholders[address]) {
+            this.stakeholders[address] += amount;
+        } else {
+            this.stakeholders[address] = amount;
+        }
+    }
+
+    selectStakingAddress() {
+        const stakeSum = Object.values(this.stakeholders).reduce((a, b) => a + b, 0);
+        if (stakeSum === 0) return null;
+
+        let random = Math.random() * stakeSum;
+        for (const address in this.stakeholders) {
+            if (this.stakeholders.hasOwnProperty(address)) {
+                if (random < this.stakeholders[address]) {
+                    return address;
+                }
+                random -= this.stakeholders[address];
+            }
+        }
+
+        return null;
     }
 }
 

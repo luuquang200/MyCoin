@@ -8,6 +8,7 @@ router.post('/sendCoin', walletController.sendCoin);
 router.get('/getTransactionHistory', walletController.getTransactionHistory);
 router.get('/getMnemonicWords', walletController.getMnemonicWords);
 router.post('/addFunds', walletController.addFunds);
+router.post('/addStake', walletController.addStake);
 router.post('/mineTransactions', walletController.minePendingTransactions);
 
 module.exports = router;
