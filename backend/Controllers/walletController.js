@@ -39,6 +39,9 @@ exports.createWallet = async (req, res) => {
 
         await newWallet.save();
 
+        // initial balance for the wallet
+        myCoin.addFunds(wallet.address, 1000);
+
         res.status(201).json({ message: 'Wallet created successfully', address: wallet.address });
     } catch (error) {
         console.log(error);
@@ -83,7 +86,12 @@ exports.getWallet = async (req, res) => {
 };
 
 exports.getMnemonicWords = (req, res) => {
-    const mnemonic = bip39.generateMnemonic();
+    let mnemonic = bip39.generateMnemonic();
+
+    while (Wallet.findOne({ mnemonic })) {
+        mnemonic = bip39.generateMnemonic();
+    }
+    
     res.status(200).json({ mnemonic });
 };
 
@@ -133,7 +141,16 @@ exports.getTransactionHistory = async (req, res) => {
 
     try {
         const transactions = myCoin.getAllTransactionsForWallet(address);
-        res.status(200).json(transactions);
+        const detailedTransactions = transactions.map(tx => ({
+            transactionHash: tx.transactionHash,
+            method: tx.method,
+            block: tx.block,
+            from: tx.fromAddress,
+            to: tx.toAddress,
+            value: tx.amount
+        }));
+
+        res.status(200).json(detailedTransactions);
     } catch (error) {
         res.status(500).json({ message: 'Error retrieving transaction history', error });
     }
@@ -168,9 +185,6 @@ exports.addStake = async (req, res) => {
     }
 
     try {
-        // Deduct the staked amount from the user's balance
-        myCoin.createTransaction({ from: address, to: null, amount });
-
         myCoin.addStake(address, amount);
         res.status(200).json({ message: 'Stake added successfully' });
     } catch (error) {

@@ -99,7 +99,7 @@ async function runTests() {
     const WALLET_ADDRESS = '0x04fc0EC9F79E5ADF81b6376dac3F172B892D09aC';
     const SENDER_ADDRESS = '0x80c55a8ee990D3406b07A3E8c0d0Ce3B002bE1d6';
     const RECIPIENT_ADDRESS = '0xeD8143a94D08eAE62a503aAc081BDEFAd12135E4';
-    const AMOUNT = 10;
+    const AMOUNT = 11;
     const ADD_FUNDS_AMOUNT = 100;
     
     console.log('Getting wallet...');
