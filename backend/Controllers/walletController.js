@@ -87,11 +87,6 @@ exports.getWallet = async (req, res) => {
 
 exports.getMnemonicWords = (req, res) => {
     let mnemonic = bip39.generateMnemonic();
-
-    while (Wallet.findOne({ mnemonic })) {
-        mnemonic = bip39.generateMnemonic();
-    }
-    
     res.status(200).json({ mnemonic });
 };
 

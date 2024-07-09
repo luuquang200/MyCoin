@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import Sidebar from './Sidebar';
-import MainContent from './MainContent';
+import { useState } from "react";
+import Sidebar from "./Sidebar";
+import MainContent from "./MainContent";
 
-const Container = () => {
-  const [activeTab, setActiveTab] = useState('dashboard');
+const Container = ({ walletAddress }) => {
+  const [activeTab, setActiveTab] = useState("dashboard");
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -12,7 +12,7 @@ const Container = () => {
   return (
     <div className="flex">
       <Sidebar onTabChange={handleTabChange} />
-      <MainContent activeTab={activeTab} />
+      <MainContent activeTab={activeTab} walletAddress={walletAddress} />
     </div>
   );
 };

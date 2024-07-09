@@ -19,6 +19,7 @@ const MainContent = ({ activeTab }) => {
 
 MainContent.propTypes = {
     activeTab: PropTypes.string.isRequired,
+    walletAddress: PropTypes.string.isRequired,
 };
-
+  
 export default MainContent;
