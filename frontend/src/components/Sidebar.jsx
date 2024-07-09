@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { LayoutDashboard, FileText, CircleUserRound } from "lucide-react";
+import { LayoutDashboard, FileText, Send, Leaf, History, Wallet, User } from "lucide-react";
 import PropTypes from "prop-types";
+import Header from "./PaperWallet/Header";
 
 const Sidebar = ({ onTabChange }) => {
     const [activeTab, setActiveTab] = useState("dashboard");
@@ -19,6 +20,7 @@ const Sidebar = ({ onTabChange }) => {
 
     return (
         <div className="w-1/5 h-screen overflow-y-auto bg-gray-100 p-4 text-gray-900">
+            <Header />
             <ul className="space-y-2">
                 <li
                     className={getTabClassName("dashboard")}
@@ -43,7 +45,7 @@ const Sidebar = ({ onTabChange }) => {
                     onClick={() => handleTabChange("send-coin")}
                 >
                     <span className="mr-4">
-                        <CircleUserRound />
+                        <Send />
                     </span>
                     <span className="flex-grow">Send Coin</span>
                 </li>
@@ -52,7 +54,7 @@ const Sidebar = ({ onTabChange }) => {
                     onClick={() => handleTabChange("stake")}
                 >
                     <span className="mr-4">
-                        <CircleUserRound />
+                        <Leaf />
                     </span>
                     <span className="flex-grow">Stake</span>
                 </li>
@@ -61,7 +63,7 @@ const Sidebar = ({ onTabChange }) => {
                     onClick={() => handleTabChange("transaction-history")}
                 >
                     <span className="mr-4">
-                        <CircleUserRound />
+                        <History />
                     </span>
                     <span className="flex-grow">Transaction History</span>
                 </li>

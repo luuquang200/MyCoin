@@ -8,7 +8,7 @@ import TransactionHistory from '../pages/TransactionHistory';
 const MainContent = ({ activeTab }) => {
     return (
         <div className="w-4/5 h-screen">
-            {activeTab === 'dashboard' && <Dashboard />}
+            {activeTab === 'dashboard' && <Dashboard walletAddress={MainContent.propTypes.walletAddress} />}
             {activeTab === 'create-wallet' && <CreateWallet />}
             {activeTab === 'send-coin' && <SendCoin />}
             {activeTab === 'stake' && <Stake />}

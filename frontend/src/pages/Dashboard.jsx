@@ -1,8 +1,11 @@
-const Dashboard = () => {
+import PaperWallet from "../components/PaperWallet/PaperWallet";
+
+const Dashboard = ({ walletAddress }) => {
     return (
-        <div>
-            <h1 className="text-2xl font-bold">Dashboard</h1>
-            <p>Welcome to the Dashboard!</p>
+        <div className="centered-container">
+            <div className="flex justify-center items-center h-screen">
+                <PaperWallet walletAddress={walletAddress} />
+            </div>
         </div>
     );
 };

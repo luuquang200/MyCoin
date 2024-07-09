@@ -10,7 +10,7 @@ const Container = ({ walletAddress }) => {
   };
 
   return (
-    <div className="flex">
+    <div className="flex h-full">
       <Sidebar onTabChange={handleTabChange} />
       <MainContent activeTab={activeTab} walletAddress={walletAddress} />
     </div>
