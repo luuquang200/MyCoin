@@ -144,6 +144,7 @@ exports.getTransactionHistory = async (req, res) => {
         const detailedTransactions = transactions.map(tx => ({
             transactionHash: tx.transactionHash,
             method: tx.method,
+            timestamp: tx.timestamp,
             block: tx.block,
             from: tx.fromAddress,
             to: tx.toAddress,
