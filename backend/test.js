@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const BASE_URL = 'http://localhost:3000'; // Adjust if your server runs on a different port
+const BASE_URL = 'http://localhost:5000'; 
 
 async function createWallet(password, mnemonic) {
     try {
@@ -66,7 +66,8 @@ async function addStake(address, amount) {
     try {
         const response = await axios.post(`${BASE_URL}/addStake`, {
             address,
-            amount
+            amount,
+            password: 'anhbakhia'
         });
         console.log('Add Stake:', response.data);
     } catch (error) {
@@ -95,34 +96,38 @@ async function getPendingTransactions() {
 }
 
 async function runTests() {
-    const PASSWORD = 'anhbakhia';
-    const WALLET_ADDRESS = '0x04fc0EC9F79E5ADF81b6376dac3F172B892D09aC';
-    const SENDER_ADDRESS = '0x80c55a8ee990D3406b07A3E8c0d0Ce3B002bE1d6';
-    const RECIPIENT_ADDRESS = '0xeD8143a94D08eAE62a503aAc081BDEFAd12135E4';
-    const AMOUNT = 11;
-    const ADD_FUNDS_AMOUNT = 100;
+    // const PASSWORD = 'anhbakhia';
+    // const WALLET_ADDRESS = '0x04fc0EC9F79E5ADF81b6376dac3F172B892D09aC';
+    // const SENDER_ADDRESS = '0x80c55a8ee990D3406b07A3E8c0d0Ce3B002bE1d6';
+    // const RECIPIENT_ADDRESS = '0xeD8143a94D08eAE62a503aAc081BDEFAd12135E4';
+    // const AMOUNT = 11;
+    // const ADD_FUNDS_AMOUNT = 100;
     
-    console.log('Getting wallet...');
-    await getWallet(WALLET_ADDRESS, PASSWORD);
+    // console.log('Getting wallet...');
+    // await getWallet(WALLET_ADDRESS, PASSWORD);
 
-    console.log('Adding funds...');
-    await addFunds(WALLET_ADDRESS, ADD_FUNDS_AMOUNT);
-    await addFunds(SENDER_ADDRESS, ADD_FUNDS_AMOUNT);
+    // console.log('Adding funds...');
+    // await addFunds(WALLET_ADDRESS, ADD_FUNDS_AMOUNT);
+    // await addFunds(SENDER_ADDRESS, ADD_FUNDS_AMOUNT);
 
-    console.log('Adding stake...');
-    await addStake(WALLET_ADDRESS, AMOUNT);
+    // console.log('Adding stake...');
+    // await addStake(WALLET_ADDRESS, AMOUNT);
 
-    console.log('Sending coin...');
-    await sendCoin(SENDER_ADDRESS, RECIPIENT_ADDRESS, AMOUNT, PASSWORD);
+    // console.log('Sending coin...');
+    // await sendCoin(SENDER_ADDRESS, RECIPIENT_ADDRESS, AMOUNT, PASSWORD);
 
-    console.log('Getting pending transactions...');
-    await getPendingTransactions();
+    // console.log('Getting pending transactions...');
+    // await getPendingTransactions();
 
-    console.log('Mining pending transactions...');
-    await minePendingTransactions(WALLET_ADDRESS);
+    // console.log('Mining pending transactions...');
+    // await minePendingTransactions(WALLET_ADDRESS);
 
-    console.log('Getting transaction history...');
-    await getTransactionHistory(WALLET_ADDRESS);
+    // console.log('Getting transaction history...');
+    // await getTransactionHistory(WALLET_ADDRESS);
+    const WALLET_ADDRESS = '0x45Acee20aE53523ED41f24A896783970C2E09744';
+    const AMOUNT = 100;
+    // add funds to the wallet
+    await addFunds(WALLET_ADDRESS, AMOUNT);
 }
 
 runTests();

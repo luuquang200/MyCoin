@@ -1,5 +1,5 @@
 export const API_URL = "http://localhost:5000";
-
+export const WALLET_ADDRESS = "walletAddress";
 export const ENDPOINTS = {
   CREATE_WALLET: `${API_URL}/createWallet`,
   GET_WALLET: `${API_URL}/getWallet`,
