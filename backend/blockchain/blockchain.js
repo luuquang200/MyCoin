@@ -77,6 +77,19 @@ class Blockchain {
         return txs;
     }
 
+    getAllTransactions() {
+        const txs = [];
+
+        for (const block of this.chain) {
+            for (const tx of block.transactions) {
+                tx.block = block.hash; 
+                txs.push(tx);
+            }
+        }
+
+        return txs;
+    }
+
     isChainValid() {
         for (let i = 1; i < this.chain.length; i++) {
             const currentBlock = this.chain[i];

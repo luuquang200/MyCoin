@@ -116,12 +116,17 @@ exports.sendCoin = async (req, res) => {
 exports.getTransactionHistory = async (req, res) => {
     const { address } = req.query;
 
-    if (!address) {
-        return res.status(400).json({ message: 'Address is required' });
-    }
-
     try {
-        const transactions = myCoin.getAllTransactionsForWallet(address);
+        let transactions;
+
+        if (address) {
+            transactions = myCoin.getAllTransactionsForWallet(address);
+        } else {
+            transactions = myCoin.getAllTransactions();
+        }
+
+        const pendingTransactionHashes = new Set(myCoin.pendingTransactions.map(tx => tx.transactionHash));
+
         const detailedTransactions = transactions.map(tx => ({
             transactionHash: tx.transactionHash,
             method: tx.method,
@@ -129,7 +134,8 @@ exports.getTransactionHistory = async (req, res) => {
             block: tx.block,
             from: tx.fromAddress,
             to: tx.toAddress,
-            value: tx.amount
+            value: tx.amount,
+            status: pendingTransactionHashes.has(tx.transactionHash) ? 'Pending' : 'Successful'
         }));
 
         res.status(200).json(detailedTransactions);
