@@ -10,4 +10,5 @@ export const ENDPOINTS = {
   ADD_STAKE: `${API_URL}/addStake`,
   GET_PENDING_TRANSACTIONS: `${API_URL}/getPendingTransactions`,
   MINE_TRANSACTIONS: `${API_URL}/mineTransactions`,
+  GET_STAKING_BALANCE: `${API_URL}/getStakingBalance`,
 };

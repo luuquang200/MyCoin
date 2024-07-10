@@ -9,6 +9,7 @@ router.get('/getTransactionHistory', walletController.getTransactionHistory);
 router.get('/getMnemonicWords', walletController.getMnemonicWords);
 router.post('/addFunds', walletController.addFunds);
 router.post('/addStake', walletController.addStake);
+router.get('/getStakingBalance', walletController.getStakingBalance);
 router.get('/getPendingTransactions', walletController.getPendingTransactions);
 router.post('/mineTransactions', walletController.minePendingTransactions);
 

@@ -193,6 +193,22 @@ exports.addStake = async (req, res) => {
     }
 };
 
+// Get stake for an address
+exports.getStakingBalance = async (req, res) => {
+    const { address } = req.query;
+
+    if (!address) {
+        return res.status(400).json({ message: 'Address is required' });
+    }
+
+    try {
+        const stake = myCoin.getStake(address);
+        res.status(200).json({ address, stake });
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving stake', error });
+    }
+};
+
 // Mine Pending Transactions
 exports.minePendingTransactions = async (req, res) => {
     const { miningRewardAddress } = req.body;

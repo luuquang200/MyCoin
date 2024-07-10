@@ -120,6 +120,10 @@ class Blockchain {
         this.chain.push(new Block(Date.now(), [new Transaction(address, null, amount, TransactionMethods.ADD_STAKE)], this.getLatestBlock().hash));
     }
 
+    getStake(address) {
+        return this.stakeholders[address] || 0;
+    }
+
     selectStakingAddress() {
         const stakeSum = Object.values(this.stakeholders).reduce((a, b) => a + b, 0);
         if (stakeSum === 0) return null;
