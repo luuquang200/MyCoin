@@ -100,7 +100,7 @@ const SendCoin = () => {
         {errors && <p className="text-red-500">{errors}</p>}
         <button
           onClick={handleSend}
-          className="w-full px-4 py-2 text-white bg-blue-600 rounded-lg"
+          className="w-full px-4 py-2 text-white bg-teal-600 rounded-lg"
         >
           Create transaction
         </button>
@@ -127,7 +127,7 @@ const SendCoin = () => {
                 </button>
                 <button
                   onClick={handleConfirmSend}
-                  className="px-4 py-2 text-white bg-blue-600 rounded-lg">
+                  className="px-4 py-2 text-white bg-teal-600 rounded-lg">
                   Confirm
                 </button>
               </div>
@@ -142,7 +142,7 @@ const SendCoin = () => {
               <p className="mb-4">Transaction created successfully!</p>
               <button
                 onClick={() => setShowSuccessPopup(false)}
-                className="px-4 py-2 text-white bg-blue-600 rounded-lg">
+                className="px-4 py-2 text-white bg-teal-600 rounded-lg">
                 Close
               </button>
             </div>

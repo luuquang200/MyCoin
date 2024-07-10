@@ -97,16 +97,16 @@ const Stake = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 w-full flex justify-center items-center">
-      <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
-        <h2 className="mb-4 text-xl font-semibold">Stake Your Coins</h2>
-        {errors && <p className="text-red-500">{errors}</p>}
-        <div className="mb-4">
-          <p>Balance: {balance} MyCoin</p>
-          <p>Staked Amount: {stakedAmount} MyCoin</p>
+    <div className="min-h-screen  w-full flex justify-center items-center">
+      <div className="w-full max-w-3xl p-8 bg-white rounded-lg shadow-lg bg-gray-100">
+        <h2 className="mb-6 text-3xl font-semibold text-center">Stake Your Coins</h2>
+        {errors && <p className="text-red-500 mb-4">{errors}</p>}
+        <div className="mb-4 text-lg">
+          <p>Balance: <span className="font-semibold">{balance} MCoin</span></p>
+          <p>Staked Amount: <span className="font-semibold">{stakedAmount} MCoin</span></p>
         </div>
         <div className="mb-4">
-          <label className="block mb-2 text-sm font-medium text-gray-700">Amount</label>
+          <label className="block mb-2 text-lg font-medium text-gray-700">Amount</label>
           <input
             type="number"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
@@ -117,14 +117,14 @@ const Stake = () => {
         </div>
         <button
           onClick={handleStake}
-          className="w-full px-4 py-2 text-white bg-blue-600 rounded-lg"
+          className="w-full px-4 py-2 text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition-colors"
         >
           Stake
         </button>
 
         {showPasswordPopup && (
           <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-            <div className="w-full max-w-sm p-6 bg-white rounded-lg shadow-md">
+            <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
               <h2 className="mb-4 text-xl font-semibold">Enter Password</h2>
               <div className="mb-4">
                 <label className="block mb-2 text-sm font-medium text-gray-700">Password</label>
@@ -139,12 +139,12 @@ const Stake = () => {
               <div className="flex justify-between">
                 <button
                   onClick={() => setShowPasswordPopup(false)}
-                  className="px-4 py-2 text-white bg-gray-600 rounded-lg">
+                  className="px-4 py-2 text-white bg-gray-600 rounded-lg hover:bg-gray-700 transition-colors">
                   Cancel
                 </button>
                 <button
                   onClick={handleConfirmStake}
-                  className="px-4 py-2 text-white bg-blue-600 rounded-lg">
+                  className="px-4 py-2 text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition-colors">
                   Confirm
                 </button>
               </div>
@@ -154,20 +154,25 @@ const Stake = () => {
 
         {showSuccessPopup && (
           <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-            <div className="w-full max-w-sm p-6 bg-white rounded-lg shadow-md">
+            <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
               <h2 className="mb-4 text-xl font-semibold">Stake Successful</h2>
-              <p className="mb-4">You have successfully staked {amount} MyCoin.</p>
+              <p className="mb-4">You have successfully staked {amount} MCoin.</p>
               <button
                 onClick={() => setShowSuccessPopup(false)}
-                className="px-4 py-2 text-white bg-blue-600 rounded-lg">
+                className="px-4 py-2 text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition-colors">
                 OK
               </button>
             </div>
           </div>
         )}
+        <div className="mt-6 p-4 bg-slate-200 rounded-lg text-center">
+          <p>Your MCoin is staked with our partner <span className="font-semibold">Staked.us</span></p>
+          <p>Staked.us will create and maintain MCoin2 validators for you</p>
+          <p>Earn up to <span className="font-semibold">6% annualized rewards</span></p>
+        </div>
       </div>
     </div>
   );
 };
 
-export default Stake;
+export default Stake

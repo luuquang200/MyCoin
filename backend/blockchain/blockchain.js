@@ -112,6 +112,7 @@ class Blockchain {
     }
 
     addStake(address, amount) {
+        amount = Number(amount); 
         if (this.stakeholders[address]) {
             this.stakeholders[address] += amount;
         } else {

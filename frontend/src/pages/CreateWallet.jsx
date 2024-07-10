@@ -110,7 +110,7 @@ const CreateWallet = ({ onWalletCreated }) => {
                 required
               />
             </div>
-            <button type="submit" className="w-full px-4 py-2 text-white bg-blue-600 rounded-lg">Generate Mnemonic</button>
+            <button type="submit" className="w-full px-4 py-2 text-white bg-teal-600 rounded-lg">Generate Mnemonic</button>
           </form>
         )}
         {step === 2 && showMnemonic && (
@@ -129,7 +129,7 @@ const CreateWallet = ({ onWalletCreated }) => {
                 generateVerificationWords();
                 setStep(3);
               }}
-              className="w-full px-4 py-2 text-white bg-blue-600 rounded-lg"
+              className="w-full px-4 py-2 text-white bg-teal-600 rounded-lg"
             >
               Next
             </button>
@@ -158,7 +158,7 @@ const CreateWallet = ({ onWalletCreated }) => {
               </div>
             ))}
             {errors && <p className="text-red-500">{errors}</p>}
-            <button type="submit" className="w-full px-4 py-2 text-white bg-blue-600 rounded-lg">
+            <button type="submit" className="w-full px-4 py-2 text-white bg-teal-600 rounded-lg">
               Verify
             </button>
           </form>
