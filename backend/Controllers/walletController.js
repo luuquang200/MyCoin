@@ -124,7 +124,8 @@ exports.getTransactionHistory = async (req, res) => {
         } else {
             transactions = myCoin.getAllTransactions();
         }
-
+        
+        transactions = transactions.concat(myCoin.pendingTransactions);
         const pendingTransactionHashes = new Set(myCoin.pendingTransactions.map(tx => tx.transactionHash));
 
         const detailedTransactions = transactions.map(tx => ({
