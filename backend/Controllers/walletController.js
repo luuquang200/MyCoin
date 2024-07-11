@@ -217,6 +217,10 @@ exports.minePendingTransactions = async (req, res) => {
         return res.status(400).json({ message: 'Mining reward address is required' });
     }
 
+    if (myCoin.pendingTransactions.length === 0) {
+        return res.status(400).json({ message: 'No pending transactions to mine' });
+    }
+
     if (myCoin.selectStakingAddress() !== miningRewardAddress) {
         return res.status(400).json({ message: 'You are not the staker' });
     }

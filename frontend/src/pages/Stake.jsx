@@ -107,14 +107,14 @@ const Stake = () => {
     <div className="min-h-screen w-full flex justify-center items-center  bg-gradient-to-r from-blue-100 to-purple-100">
       <ToastContainer />
       <div className="w-full max-w-3xl p-8 bg-white rounded-lg shadow-lg bg-gray-100">
-        <h2 className="mb-6 text-3xl font-semibold text-center">Stake Your Coins</h2>
+        <h2 className="mb-4 text-2xl font-bold text-center text-teal-600">Stake Your Coins</h2>
         {errors && <p className="text-red-500 mb-4">{errors}</p>}
         <div className="mb-4 text-lg">
           <p>Balance: <span className="font-semibold">{balance} MCoin</span></p>
           <p>Staked Amount: <span className="font-semibold">{stakedAmount} MCoin</span></p>
         </div>
         <div className="mb-4">
-          <label className="block mb-2 text-lg font-medium text-gray-700">Amount</label>
+          <label className="block mb-2 text-sm font-medium text-gray-700">Amount</label>
           <input
             type="number"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"

@@ -3,6 +3,8 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ENDPOINTS, WALLET_ADDRESS } from '../config';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInbox } from '@fortawesome/free-solid-svg-icons';
 
 const PendingTransactions = () => {
   const [pendingTransactions, setPendingTransactions] = useState([]);
@@ -44,30 +46,37 @@ const PendingTransactions = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 w-full flex justify-center items-center">
+    <div className="min-h-screen bg-gradient-to-r from-blue-100 to-purple-100 w-full flex justify-center items-center">
       <ToastContainer />
       <div className="w-full max-w-2xl p-6 bg-white rounded-lg shadow-md">
-        <h2 className="mb-6 text-2xl font-semibold text-center">Pending Transactions</h2>
+        <h2 className="mb-6 text-3xl font-bold text-center text-teal-600">Pending Transactions</h2>
         {pendingTransactions.length === 0 ? (
-          <p className="text-center text-gray-600">No pending transactions</p>
+          <div className="flex flex-col items-center">
+            <FontAwesomeIcon icon={faInbox} size="6x" className="text-gray-400 mb-4" />
+            <p className="text-xl text-gray-600">No pending transactions</p>
+          </div>
         ) : (
           <div className="mb-4">
             {pendingTransactions.map((tx, index) => (
-              <div key={index} className="p-4 mb-2 border rounded-lg">
-                <p><strong>From:</strong> {tx.fromAddress}</p>
-                <p><strong>To:</strong> {tx.toAddress}</p>
-                <p><strong>Amount:</strong> {tx.amount}</p>
-                <p><strong>Method:</strong> {tx.method}</p>
+              <div key={index} className="p-4 mb-2 border rounded-lg bg-gray-50 shadow-sm">
+                <p className="text-lg"><strong>Time:</strong> {new Date(tx.timestamp).toLocaleString()}</p>
+                <p className="text-lg"><strong>From:</strong> {tx.fromAddress}</p>
+                <p className="text-lg"><strong>To:</strong> {tx.toAddress}</p>
+                <p className="text-lg"><strong>Amount:</strong> {tx.amount}</p>
+                <p className="text-lg"><strong>Method:</strong> {tx.method}</p>
               </div>
             ))}
           </div>
         )}
-        <button
-          onClick={handleMineTransactions}
-          className="w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          Mine Transactions
-        </button>
+
+        {pendingTransactions.length > 0 && (
+            <button
+            onClick={handleMineTransactions}
+            className="w-full px-4 py-2 text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition-colors"
+            >
+                Mine Transactions
+            </button>
+        )}
       </div>
     </div>
   );
