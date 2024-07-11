@@ -32,15 +32,6 @@ const Sidebar = ({ onTabChange }) => {
                     <span className="flex-grow">Dashboard</span>
                 </li>
                 <li
-                    className={getTabClassName("create-wallet")}
-                    onClick={() => handleTabChange("create-wallet")}
-                >
-                    <span className="mr-4">
-                        <FileText />
-                    </span>
-                    <span className="flex-grow">Create Wallet</span>
-                </li>
-                <li
                     className={getTabClassName("send-coin")}
                     onClick={() => handleTabChange("send-coin")}
                 >
@@ -57,6 +48,15 @@ const Sidebar = ({ onTabChange }) => {
                         <Leaf />
                     </span>
                     <span className="flex-grow">Stake</span>
+                </li>
+                <li
+                    className={getTabClassName("pending-transactions")}
+                    onClick={() => handleTabChange("pending-transactions")}
+                >
+                    <span className="mr-4">
+                        <FileText />
+                    </span>
+                    <span className="flex-grow">Pending Transactions</span>
                 </li>
                 <li
                     className={getTabClassName("transaction-history")}
