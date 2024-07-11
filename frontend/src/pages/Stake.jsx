@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { ENDPOINTS, WALLET_ADDRESS } from '../config';
 
 const Stake = () => {
@@ -8,7 +10,6 @@ const Stake = () => {
   const [amount, setAmount] = useState('');
   const [password, setPassword] = useState('');
   const [showPasswordPopup, setShowPasswordPopup] = useState(false);
-  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [errors, setErrors] = useState('');
   const userAddress = localStorage.getItem(WALLET_ADDRESS);
 
@@ -21,6 +22,7 @@ const Stake = () => {
         setBalance(response.data.balance);
       } catch (error) {
         console.error("Error fetching wallet:", error.response ? error.response.data : error.message);
+        toast.error("Error fetching wallet");
       }
     };
 
@@ -32,6 +34,7 @@ const Stake = () => {
         setStakedAmount(response.data.stake);
       } catch (error) {
         console.error("Error fetching staking balance:", error.response ? error.response.data : error.message);
+        toast.error("Error fetching staking balance");
       }
     };
 
@@ -43,6 +46,7 @@ const Stake = () => {
     setErrors('');
     if (!amount) {
       setErrors('Amount is required.');
+      toast.error('Amount is required.');
       return;
     }
     setShowPasswordPopup(true);
@@ -52,6 +56,7 @@ const Stake = () => {
     setErrors('');
     if (!password) {
       setErrors('Password is required.');
+      toast.error('Password is required.');
       return;
     }
 
@@ -63,7 +68,7 @@ const Stake = () => {
       });
 
       setShowPasswordPopup(false);
-      setShowSuccessPopup(true);
+      toast.success(`You have successfully staked ${amount} MCoin.`);
 
       // Refetch balance and staked amount after successful staking
       const fetchWallet = async () => {
@@ -74,6 +79,7 @@ const Stake = () => {
           setBalance(response.data.balance);
         } catch (error) {
           console.error("Error fetching wallet:", error.response ? error.response.data : error.message);
+          toast.error("Error fetching wallet");
         }
       };
 
@@ -85,6 +91,7 @@ const Stake = () => {
           setStakedAmount(response.data.stake);
         } catch (error) {
           console.error("Error fetching staking balance:", error.response ? error.response.data : error.message);
+          toast.error("Error fetching staking balance");
         }
       };
 
@@ -92,12 +99,13 @@ const Stake = () => {
       fetchStakingBalance();
     } catch (error) {
       console.error('Error adding stake:', error.response ? error.response.data : error.message);
-      setErrors('Error adding stake. Please check the details and try again.');
+      toast.error('Error adding stake. Please check the details and try again.');
     }
   };
 
   return (
-    <div className="min-h-screen  w-full flex justify-center items-center">
+    <div className="min-h-screen w-full flex justify-center items-center  bg-gradient-to-r from-blue-100 to-purple-100">
+      <ToastContainer />
       <div className="w-full max-w-3xl p-8 bg-white rounded-lg shadow-lg bg-gray-100">
         <h2 className="mb-6 text-3xl font-semibold text-center">Stake Your Coins</h2>
         {errors && <p className="text-red-500 mb-4">{errors}</p>}
@@ -152,19 +160,6 @@ const Stake = () => {
           </div>
         )}
 
-        {showSuccessPopup && (
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-            <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
-              <h2 className="mb-4 text-xl font-semibold">Stake Successful</h2>
-              <p className="mb-4">You have successfully staked {amount} MCoin.</p>
-              <button
-                onClick={() => setShowSuccessPopup(false)}
-                className="px-4 py-2 text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition-colors">
-                OK
-              </button>
-            </div>
-          </div>
-        )}
         <div className="mt-6 p-4 bg-slate-200 rounded-lg text-center">
           <p>Your MCoin is staked with our partner <span className="font-semibold">Staked.us</span></p>
           <p>Staked.us will create and maintain MCoin2 validators for you</p>
@@ -175,4 +170,4 @@ const Stake = () => {
   );
 };
 
-export default Stake
+export default Stake;

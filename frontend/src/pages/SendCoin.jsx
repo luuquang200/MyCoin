@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { ENDPOINTS, WALLET_ADDRESS } from "../config";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SendCoin = () => {
   const [balance, setBalance] = useState(0);
@@ -9,8 +11,6 @@ const SendCoin = () => {
   const [token, setToken] = useState("MyCoin");
   const [password, setPassword] = useState("");
   const [showPasswordPopup, setShowPasswordPopup] = useState(false);
-  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-  const [errors, setErrors] = useState("");
   const userAddress = localStorage.getItem(WALLET_ADDRESS);
 
   useEffect(() => {
@@ -29,12 +29,12 @@ const SendCoin = () => {
 
   const handleSend = async () => {
     if (!toAddress || !amount || !token) {
-      setErrors("All fields are required.");
+      toast.error("All fields are required.");
       return;
     }
 
     if (Number(amount) > balance) {
-      setErrors("Amount exceeds balance.");
+      toast.error("Amount exceeds balance.");
       return;
     }
 
@@ -52,19 +52,19 @@ const SendCoin = () => {
       console.log("Send Coin:", response.data);
       setShowPasswordPopup(false);
       setBalance(balance - amount);
-      setShowSuccessPopup(true);
+      toast.success("Transaction created successfully!");
     } catch (error) {
       console.error("Error sending coin:", error.response ? error.response.data : error.message);
-      setErrors("Failed to send coin. Please check the details and try again.");
+      toast.error("Failed to send coin. Please check the details and try again.");
     }
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-100">
+    <div className="flex h-screen items-center justify-center bg-gradient-to-r from-blue-100 to-purple-100">
       <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
-        <h2 className="mb-4 text-xl font-semibold">Send Coin</h2>
-        <div className="mb-4">
-          <p>Balance: {balance} MyCoin</p>
+        <h2 className="mb-4 text-2xl font-bold text-center text-teal-600">Send Coin</h2>
+        <div className="mb-4 text-center text-lg">
+          <p>Balance: <span className="font-semibold">{balance}</span> MyCoin</p>
         </div>
         <div className="mb-4">
           <label className="block mb-2 text-sm font-medium text-gray-700">To Address</label>
@@ -97,10 +97,9 @@ const SendCoin = () => {
             {/* Add more tokens here if needed */}
           </select>
         </div>
-        {errors && <p className="text-red-500">{errors}</p>}
         <button
           onClick={handleSend}
-          className="w-full px-4 py-2 text-white bg-teal-600 rounded-lg"
+          className="w-full px-4 py-2 text-white bg-teal-600 rounded-lg hover:bg-teal-700"
         >
           Create transaction
         </button>
@@ -122,12 +121,12 @@ const SendCoin = () => {
               <div className="flex justify-between">
                 <button
                   onClick={() => setShowPasswordPopup(false)}
-                  className="px-4 py-2 text-white bg-gray-600 rounded-lg">
+                  className="px-4 py-2 text-white bg-gray-600 rounded-lg hover:bg-gray-700">
                   Cancel
                 </button>
                 <button
                   onClick={handleConfirmSend}
-                  className="px-4 py-2 text-white bg-teal-600 rounded-lg">
+                  className="px-4 py-2 text-white bg-teal-600 rounded-lg hover:bg-teal-700">
                   Confirm
                 </button>
               </div>
@@ -135,19 +134,7 @@ const SendCoin = () => {
           </div>
         )}
 
-        {showSuccessPopup && (
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-            <div className="w-full max-w-sm p-6 bg-white rounded-lg shadow-md">
-              <h2 className="mb-4 text-xl font-semibold">Transaction Success</h2>
-              <p className="mb-4">Transaction created successfully!</p>
-              <button
-                onClick={() => setShowSuccessPopup(false)}
-                className="px-4 py-2 text-white bg-teal-600 rounded-lg">
-                Close
-              </button>
-            </div>
-          </div>
-        )}
+        <ToastContainer />
       </div>
     </div>
   );
