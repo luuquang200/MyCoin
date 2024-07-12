@@ -39,6 +39,9 @@ exports.createWallet = async (req, res) => {
 
         await newWallet.save();
 
+        // initial balance for the wallet
+        myCoin.addFunds(wallet.address, 100);
+
         res.status(201).json({ message: 'Wallet created successfully', address: wallet.address });
     } catch (error) {
         console.log(error);
@@ -47,10 +50,10 @@ exports.createWallet = async (req, res) => {
 };
 
 exports.getWallet = async (req, res) => {
-    const { address, password } = req.body;
+    const { address } = req.query;
 
-    if (!address || !password) {
-        return res.status(400).json({ message: 'Address and password are required' });
+    if (!address) {
+        return res.status(400).json({ message: 'Address are required' });
     }
 
     try {
@@ -60,30 +63,16 @@ exports.getWallet = async (req, res) => {
             return res.status(404).json({ message: 'Wallet not found' });
         }
 
-        // Compare the password
-        const isMatch = await bcrypt.compare(password, wallet.password);
-
-        if (!isMatch) {
-            return res.status(401).json({ message: 'Invalid password' });
-        }
-
-        // Decrypt the private key and mnemonic
-        const bytesPrivateKey = crypto.AES.decrypt(wallet.privateKey, password);
-        const privateKey = bytesPrivateKey.toString(crypto.enc.Utf8);
-
-        const bytesMnemonic = crypto.AES.decrypt(wallet.mnemonic, password);
-        const mnemonic = bytesMnemonic.toString(crypto.enc.Utf8);
-
         const balance = myCoin.getBalanceOfAddress(wallet.address);
 
-        res.status(200).json({ address: wallet.address, mnemonic, privateKey, balance });
+        res.status(200).json({ address: wallet.address, balance });
     } catch (error) {
         res.status(500).json({ message: 'Error retrieving wallet', error });
     }
 };
 
 exports.getMnemonicWords = (req, res) => {
-    const mnemonic = bip39.generateMnemonic();
+    let mnemonic = bip39.generateMnemonic();
     res.status(200).json({ mnemonic });
 };
 
@@ -109,6 +98,10 @@ exports.sendCoin = async (req, res) => {
             return res.status(401).json({ message: 'Invalid password' });
         }
 
+        if (myCoin.getBalanceOfAddress(senderAddress) < amount) {
+            return res.status(400).json({ message: 'Not enough balance' });
+        }
+
         const transaction = new Transaction(senderAddress, recipientAddress, amount);
         myCoin.createTransaction(transaction);
 
@@ -123,18 +116,36 @@ exports.sendCoin = async (req, res) => {
 exports.getTransactionHistory = async (req, res) => {
     const { address } = req.query;
 
-    if (!address) {
-        return res.status(400).json({ message: 'Address is required' });
-    }
-
     try {
-        const transactions = myCoin.getAllTransactionsForWallet(address);
-        res.status(200).json(transactions);
+        let transactions;
+
+        if (address) {
+            transactions = myCoin.getAllTransactionsForWallet(address);
+        } else {
+            transactions = myCoin.getAllTransactions();
+        }
+        
+        transactions = transactions.concat(myCoin.pendingTransactions);
+        const pendingTransactionHashes = new Set(myCoin.pendingTransactions.map(tx => tx.transactionHash));
+
+        const detailedTransactions = transactions.map(tx => ({
+            transactionHash: tx.transactionHash,
+            method: tx.method,
+            timestamp: tx.timestamp,
+            block: tx.block,
+            from: tx.fromAddress,
+            to: tx.toAddress,
+            value: tx.amount,
+            status: pendingTransactionHashes.has(tx.transactionHash) ? 'Pending' : 'Successful'
+        }));
+
+        res.status(200).json(detailedTransactions);
     } catch (error) {
         res.status(500).json({ message: 'Error retrieving transaction history', error });
     }
 };
 
+// Add Funds (Only for testing purposes)
 exports.addFunds = async (req, res) => {
     const { address, amount } = req.body;
 
@@ -150,11 +161,68 @@ exports.addFunds = async (req, res) => {
     }
 };
 
+// Add Stake
+exports.addStake = async (req, res) => {
+    const { address, amount, password } = req.body;
+
+    if (!address || !amount || !password) {
+        return res.status(400).json({ message: 'Address, amount and password are required' });
+    }
+
+    if (myCoin.getBalanceOfAddress(address) < amount) {
+        return res.status(400).json({ message: 'Not enough balance' });
+    }
+
+    // Check if the password is correct
+    const wallet = await Wallet.findOne({ address });
+
+    if (!wallet) {
+        return res.status(404).json({ message: 'Wallet not found' });
+    }
+
+    const isMatch = await bcrypt.compare(password, wallet.password);
+    if (!isMatch) {
+        return res.status(401).json({ message: 'Invalid password' });
+    }
+
+    try {
+        myCoin.addStake(address, amount);
+        res.status(200).json({ message: 'Stake added successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error adding stake', error });
+    }
+};
+
+// Get stake for an address
+exports.getStakingBalance = async (req, res) => {
+    const { address } = req.query;
+
+    if (!address) {
+        return res.status(400).json({ message: 'Address is required' });
+    }
+
+    try {
+        const stake = myCoin.getStake(address);
+        res.status(200).json({ address, stake });
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving stake', error });
+    }
+};
+
+// Mine Pending Transactions
 exports.minePendingTransactions = async (req, res) => {
     const { miningRewardAddress } = req.body;
 
     if (!miningRewardAddress) {
         return res.status(400).json({ message: 'Mining reward address is required' });
+    }
+
+    if (myCoin.pendingTransactions.length === 0) {
+        return res.status(400).json({ message: 'No pending transactions to mine' });
+    }
+
+    if (myCoin.selectStakingAddress() !== miningRewardAddress) {
+        return res.status(400).json({ message: 'You are not the staker' });
     }
 
     try {
@@ -163,4 +231,11 @@ exports.minePendingTransactions = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Error mining transactions', error });
     }
+};
+
+
+// Get pending transactions
+exports.getPendingTransactions = async (req, res) => {
+    const pendingTransactions = myCoin.pendingTransactions;
+    res.status(200).json(pendingTransactions);
 };
