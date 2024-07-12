@@ -58,7 +58,6 @@ exports.accessWallet = async (req, res) => {
 
     try {
         const wallet = new ethers.Wallet(privateKey);
-        myCoin.addFunds(wallet.address, 100);
 
         res.status(200).json({ message: 'Wallet accessed successfully', address: wallet.address });
     } catch (error) {

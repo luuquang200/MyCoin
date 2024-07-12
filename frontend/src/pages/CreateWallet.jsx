@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import * as bip39 from "bip39";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import { ENDPOINTS } from "../config";
 
 const CreateWallet = ({ onWalletCreated }) => {
@@ -11,6 +13,9 @@ const CreateWallet = ({ onWalletCreated }) => {
   const [verificationWords, setVerificationWords] = useState([]);
   const [selectedWords, setSelectedWords] = useState([]);
   const [errors, setErrors] = useState("");
+  const [privateKey, setPrivateKey] = useState("");
+  const [address, setAddress] = useState("");
+  const [showPrivateKeyPopup, setShowPrivateKeyPopup] = useState(false);
 
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
@@ -51,7 +56,9 @@ const CreateWallet = ({ onWalletCreated }) => {
         password,
         mnemonic: mnemonic.join(" "),
       });
-      onWalletCreated(response.data.address);
+      setPrivateKey(response.data.privateKey);
+      setAddress(response.data.address);
+      setShowPrivateKeyPopup(true);
     } catch (error) {
       console.error("Error creating wallet:", error);
       setErrors("Error creating wallet. Please try again.");
@@ -93,8 +100,14 @@ const CreateWallet = ({ onWalletCreated }) => {
     return randomWords;
   };
 
+  const handleClosePopup = (address) => {
+    setShowPrivateKeyPopup(false);
+    onWalletCreated(address);
+  };
+
   return (
     <div className="flex h-screen items-center justify-center bg-gradient-to-r from-blue-100 to-purple-100 text-gray-800">
+      <ToastContainer />
       <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
         {step === 1 && (
           <form onSubmit={handlePasswordSubmit}>
@@ -163,6 +176,23 @@ const CreateWallet = ({ onWalletCreated }) => {
               Verify
             </button>
           </form>
+        )}
+        {showPrivateKeyPopup && (
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+            <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+              <h2 className="mb-4 text-xl font-semibold">Your Private Key</h2>
+              <p className="mb-4">Please store this private key securely. You will need it to access your wallet in the future.</p>
+              <div className="mb-4 p-4 bg-gray-100 rounded-lg">
+                <p className="break-all">{privateKey}</p>
+              </div>
+              <button
+                onClick={() => handleClosePopup(address)}
+                className="w-full px-4 py-2 text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>

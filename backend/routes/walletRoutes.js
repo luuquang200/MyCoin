@@ -3,7 +3,7 @@ const walletController = require('../Controllers/walletController');
 const router = express.Router();
 
 router.post('/createWallet', walletController.createWallet);
-router.get('/accessWallet', walletController.accessWallet);
+router.post('/accessWallet', walletController.accessWallet);
 router.get('/getWalletBalance', walletController.getWalletBalance);
 router.post('/sendCoin', walletController.sendCoin);
 router.get('/getTransactionHistory', walletController.getTransactionHistory);
