@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from "r
 import CreateWallet from "./pages/CreateWallet";
 import AccessWallet from "./pages/AccessWallet";
 import Container from "./components/Container";
-import Home from "./pages/Home";  
+import Home from "./pages/Home";
 
 const App = () => {
   const [walletCreated, setWalletCreated] = useState(false);
@@ -39,13 +39,20 @@ const App = () => {
     setWalletAddress(address);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("walletAddress");
+    setWalletCreated(false);
+    setWalletAddress("");
+    navigate("/");
+  };
+
   return (
     <div className="App">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/create-wallet" element={<CreateWallet onWalletCreated={handleWalletCreated} />} />
         <Route path="/access-wallet" element={<AccessWallet onWalletAccessed={handleWalletAccessed} />} />
-        <Route path="/dashboard" element={walletCreated ? <Container walletAddress={walletAddress} /> : <Navigate to="/" />} />
+        <Route path="/dashboard" element={walletCreated ? <Container walletAddress={walletAddress} onLogout={handleLogout} /> : <Navigate to="/" />} />
       </Routes>
     </div>
   );

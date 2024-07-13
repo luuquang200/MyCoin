@@ -2,7 +2,7 @@ import { useState } from "react";
 import Sidebar from "./Sidebar";
 import MainContent from "./MainContent";
 
-const Container = ({ walletAddress }) => {
+const Container = ({ walletAddress, onLogout }) => {
   const [activeTab, setActiveTab] = useState("dashboard");
 
   const handleTabChange = (tab) => {
@@ -11,7 +11,7 @@ const Container = ({ walletAddress }) => {
 
   return (
     <div className="flex h-full">
-      <Sidebar onTabChange={handleTabChange} />
+      <Sidebar onTabChange={handleTabChange} onLogout={onLogout} />
       <MainContent activeTab={activeTab} walletAddress={walletAddress} />
     </div>
   );

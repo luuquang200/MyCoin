@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { LayoutDashboard, FileText, Send, Leaf, History, Wallet, User } from "lucide-react";
+import { LayoutDashboard, FileText, Send, Leaf, History, LogOut } from "lucide-react";
 import PropTypes from "prop-types";
 import Header from "./PaperWallet/Header";
 
-const Sidebar = ({ onTabChange }) => {
+const Sidebar = ({ onTabChange, onLogout }) => {
     const [activeTab, setActiveTab] = useState("dashboard");
 
     const handleTabChange = (tab) => {
@@ -67,6 +67,15 @@ const Sidebar = ({ onTabChange }) => {
                     </span>
                     <span className="flex-grow">Transaction History</span>
                 </li>
+                <li
+                    className={getTabClassName("logout")}
+                    onClick={() => onLogout()}
+                >
+                    <span className="mr-4">
+                        <LogOut />
+                    </span>
+                    <span className="flex-grow">Logout</span>
+                </li>
             </ul>
         </div>
     );
@@ -74,6 +83,7 @@ const Sidebar = ({ onTabChange }) => {
 
 Sidebar.propTypes = {
     onTabChange: PropTypes.func.isRequired,
+    onLogout: PropTypes.func.isRequired,
 };
 
 export default Sidebar;
