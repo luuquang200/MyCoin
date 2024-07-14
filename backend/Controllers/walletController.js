@@ -152,6 +152,7 @@ exports.getTransactionHistory = async (req, res) => {
             from: tx.fromAddress,
             to: tx.toAddress,
             value: tx.amount,
+            staker: tx.staker,
             status: pendingTransactionHashes.has(tx.transactionHash) ? 'Pending' : 'Successful'
         }));
 

@@ -1,6 +1,6 @@
 const TransactionMethods = Object.freeze({
     TRANSFER: 'Transfer',
-    REWARD: 'Teward',
+    REWARD: 'Reward',
     ADD_FUNDS: 'Add Funds',
     ADD_STAKE: 'Add Stake'
 });
