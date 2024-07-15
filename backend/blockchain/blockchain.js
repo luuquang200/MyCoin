@@ -68,7 +68,8 @@ class Blockchain {
         for (const block of this.chain) {
             for (const tx of block.transactions) {
                 if (tx.fromAddress === address || tx.toAddress === address) {
-                    tx.block = block.hash; 
+                    tx.block = block.hash;
+                    tx.staker = block.staker; 
                     txs.push(tx);
                 }
             }
@@ -83,6 +84,7 @@ class Blockchain {
         for (const block of this.chain) {
             for (const tx of block.transactions) {
                 tx.block = block.hash; 
+                tx.staker = block.staker;
                 txs.push(tx);
             }
         }

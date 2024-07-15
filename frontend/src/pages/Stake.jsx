@@ -16,7 +16,7 @@ const Stake = () => {
   useEffect(() => {
     const fetchWallet = async () => {
       try {
-        const response = await axios.get(ENDPOINTS.GET_WALLET, {
+        const response = await axios.get(ENDPOINTS.GET_WALLET_BALANCE, {
           params: { address: userAddress },
         });
         setBalance(response.data.balance);
@@ -73,7 +73,7 @@ const Stake = () => {
       // Refetch balance and staked amount after successful staking
       const fetchWallet = async () => {
         try {
-          const response = await axios.get(ENDPOINTS.GET_WALLET, {
+          const response = await axios.get(ENDPOINTS.GET_WALLET_BALANCE, {
             params: { address: userAddress },
           });
           setBalance(response.data.balance);

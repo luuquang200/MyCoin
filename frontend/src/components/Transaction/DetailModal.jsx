@@ -21,11 +21,12 @@ const DetailModal = ({ show, onClose, transaction }) => {
                   <p><strong>Transaction Hash:</strong> {transaction.transactionHash}</p>
                   <p><strong>Method:</strong> {transaction.method}</p>
                   <p><strong>Timestamp:</strong> {new Date(transaction.timestamp).toLocaleString()}</p>
-                  <p><strong>Block:</strong> {transaction.block}</p>
-                  <p><strong>From:</strong> {transaction.from}</p>
-                  <p><strong>To:</strong> {transaction.to}</p>
+                  {transaction.block && <p><strong>Block:</strong> {transaction.block}</p>}
+                  {transaction.from && <p><strong>From:</strong> {transaction.from}</p>}
+                  {transaction.to && <p><strong>To:</strong> {transaction.to}</p>}
                   <p><strong>Value:</strong> {transaction.value}</p>
                   <p><strong>Status:</strong> {transaction.status}</p>
+                  {transaction.staker && <p><strong>Staker:</strong> {transaction.staker}</p>}
                 </div>
               </div>
             </div>

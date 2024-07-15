@@ -16,7 +16,7 @@ const SendCoin = () => {
   useEffect(() => {
     const fetchWallet = async () => {
       try {
-        const response = await axios.get(ENDPOINTS.GET_WALLET, {
+        const response = await axios.get(ENDPOINTS.GET_WALLET_BALANCE, {
           params: { address: userAddress },
         });
         setBalance(response.data.balance);
@@ -51,7 +51,7 @@ const SendCoin = () => {
       });
       console.log("Send Coin:", response.data);
       setShowPasswordPopup(false);
-      setBalance(balance - amount);
+      // setBalance(balance - amount);
       toast.success("Transaction created successfully!");
     } catch (error) {
       console.error("Error sending coin:", error.response ? error.response.data : error.message);

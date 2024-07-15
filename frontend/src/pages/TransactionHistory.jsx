@@ -17,6 +17,7 @@ const TransactionHistory = () => {
         const response = await axios.get(ENDPOINTS.GET_TRANSACTION_HISTORY, {
           // params: { address: userAddress },
         });
+        console.log('Transaction History:', response.data);
         setTransactions(response.data);
       } catch (error) {
         console.error('Error fetching transaction history:', error.response ? error.response.data : error.message);
@@ -69,9 +70,6 @@ const TransactionHistory = () => {
                   <td className="px-2 py-2 border truncate">{tx.value}</td>
                   <td className={`px-2 py-2 border truncate ${tx.status === 'Successful' ? 'text-green-500' : 'text-yellow-500'}`}>{tx.status}</td>
                   <td className="px-2 py-2 border text-center">
-                    {/* <button className="text-blue-500 hover:text-blue-700" onClick={() => handleShowModal(tx)}>
-                      Show Full
-                    </button> */}
                     <button onClick={() => handleShowModal(tx)}>
                       <Eye size={20} />
                     </button>

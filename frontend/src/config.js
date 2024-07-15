@@ -2,7 +2,8 @@ export const API_URL = "http://localhost:5000";
 export const WALLET_ADDRESS = "walletAddress";
 export const ENDPOINTS = {
   CREATE_WALLET: `${API_URL}/createWallet`,
-  GET_WALLET: `${API_URL}/getWallet`,
+  ACCESS_WALLET: `${API_URL}/accessWallet`,
+  GET_WALLET_BALANCE: `${API_URL}/getWalletBalance`,
   SEND_COIN: `${API_URL}/sendCoin`,
   GET_TRANSACTION_HISTORY: `${API_URL}/getTransactionHistory`,
   GET_MNEMONIC_WORDS: `${API_URL}/getMnemonicWords`,

@@ -1,8 +1,8 @@
 const TransactionMethods = Object.freeze({
-    TRANSFER: 'transfer',
-    REWARD: 'reward',
-    ADD_FUNDS: 'addFunds',
-    ADD_STAKE: 'addStake'
+    TRANSFER: 'Transfer',
+    REWARD: 'Reward',
+    ADD_FUNDS: 'Add Funds',
+    ADD_STAKE: 'Add Stake'
 });
 
 module.exports = TransactionMethods;

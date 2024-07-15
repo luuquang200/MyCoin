@@ -42,14 +42,30 @@ exports.createWallet = async (req, res) => {
         // initial balance for the wallet
         myCoin.addFunds(wallet.address, 100);
 
-        res.status(201).json({ message: 'Wallet created successfully', address: wallet.address });
+        res.status(201).json({ message: 'Wallet created successfully', address: wallet.address, privateKey: wallet.privateKey });
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Error creating wallet', error });
     }
 };
 
-exports.getWallet = async (req, res) => {
+exports.accessWallet = async (req, res) => {
+    const { privateKey } = req.body;
+
+    if (!privateKey) {
+        return res.status(400).json({ message: 'Private key is required' });
+    }
+
+    try {
+        const wallet = new ethers.Wallet(privateKey);
+
+        res.status(200).json({ message: 'Wallet accessed successfully', address: wallet.address });
+    } catch (error) {
+        res.status(500).json({ message: 'Error accessing wallet', error });
+    }
+};
+
+exports.getWalletBalance = async (req, res) => {
     const { address } = req.query;
 
     if (!address) {
@@ -136,6 +152,7 @@ exports.getTransactionHistory = async (req, res) => {
             from: tx.fromAddress,
             to: tx.toAddress,
             value: tx.amount,
+            staker: tx.staker,
             status: pendingTransactionHashes.has(tx.transactionHash) ? 'Pending' : 'Successful'
         }));
 
