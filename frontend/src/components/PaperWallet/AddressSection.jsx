@@ -1,7 +1,33 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios"; 
+import { ENDPOINTS } from "../../config";
 
 function AddressSection() {
-  var walletAddress = localStorage.getItem("walletAddress");
+  const [balance, setBalance] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const walletAddress = localStorage.getItem("walletAddress");
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const response = await axios.get(ENDPOINTS.GET_WALLET_BALANCE, {
+          params: { address: walletAddress },
+        });
+        setBalance(response.data.balance);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (walletAddress) {
+      fetchBalance();
+    }
+  }, [walletAddress]);
+
   return (
     <section className="mt-12 max-md:mt-10 max-md:max-w-full">
       <div className="flex gap-5 max-md:flex-col max-md:gap-0">
@@ -42,6 +68,16 @@ function AddressSection() {
               <p className="mt-4 text-base leading-6">
                 {walletAddress}
               </p>
+              <h3 className="text-2xl font-black leading-9 uppercase mt-4">
+                Account Balance
+              </h3>
+              {loading ? (
+                <p className="mt-2 text-base leading-6">Loading...</p>
+              ) : error ? (
+                <p className="mt-2 text-base leading-6 text-red-500">{error}</p>
+              ) : (
+                <p className="mt-2 text-base leading-6">{balance} MyCoin</p>
+              )}
             </div>
           </div>
           <div className="flex flex-col ml-5 w-[26%] max-md:ml-0 max-md:w-full">
