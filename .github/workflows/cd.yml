@@ -5,34 +5,36 @@ on:
     branches:
       - feat/deployment
 
+env:
+  GCP_PROJECT: ${{ secrets.GCLOUD_PROJECT_ID }}
+  WORKING_DIRECTORY: ./frontend
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Cloud SDK
-      uses: google-github-actions/setup-gcloud@v1
-      with:
-        version: 'latest'
-        project_id: ${{ secrets.GCLOUD_PROJECT_ID }}
-        service_account_key: ${{ secrets.GCLOUD_SA_KEY }}
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCLOUD_SA_KEY }}
 
-    - name: Build Docker image
-      run: docker build -t gcr.io/${{ secrets.GCLOUD_PROJECT_ID }}/my-coin:latest -f frontend/dockerfile frontend
+      - name: Configure gcloud CLI
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCLOUD_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCLOUD_SA_KEY }}
 
-    - name: Authenticate Docker with Google Cloud
-      run: echo "${{ secrets.GCLOUD_SA_KEY }}" | docker login -u _json_key --password-stdin https://gcr.io
+      - name: Build and push Docker image
+        run: |
+          cd ${{ env.WORKING_DIRECTORY }}
+          IMAGE_NAME=gcr.io/${{ env.GCP_PROJECT }}/my-coin
+          gcloud builds submit --tag $IMAGE_NAME .
 
-    - name: Push Docker image to Google Container Registry
-      run: docker push gcr.io/${{ secrets.GCLOUD_PROJECT_ID }}/my-coin:latest
-
-    - name: Deploy to Cloud Run
-      run: |
-        gcloud run deploy my-coin \
-          --image gcr.io/${{ secrets.GCLOUD_PROJECT_ID }}/my-coin:latest \
-          --platform managed \
-          --region us-central1 \
-          --allow-unauthenticated
+      - name: Deploy to Cloud Run
+        run: |
+          IMAGE_NAME=gcr.io/${{ env.GCP_PROJECT }}/my-coin
+          gcloud run deploy my-coin --image $IMAGE_NAME --region us-central1 --platform managed --allow-unauthenticated
